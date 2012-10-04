@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, maximum-scale=1.0" /> 
+        <title>My Messages</title>
+        
+        <link href="css/jqm-docs.css" rel="stylesheet" type="text/css" />
+        <link href="css/jquery.mobile-1.2.0-alpha.1.css" rel="stylesheet" type="text/css" />
+        <link href="css/theme.css" rel="stylesheet" type="text/css" />
+        <link href="css/custom.css" rel="stylesheet" type="text/css" />
+        <link href="css/jquery.mobile.simpledialog.min.css" rel="stylesheet" type="text/css" />
+        
+        <script src="js/jquery-1.7.1.js" type="text/javascript"></script>
+        <script src="js/jquery.mobile-1.2.0-alpha.1.js" type="text/javascript"></script>
+        <script src="js/jquery.mobile.simpledialog2.js" type="text/javascript"></script>
+        <script src="js/Popup.js" type="text/javascript"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/plugin.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/FacebookConnect.js"></script>
+        <script type="text/javascript">
+            
+            
+            
+            function setfocus() {
+                
+                $("#txtreply").focus();
+                clearInterval(this);
+            }
+       
+            
+            $(document).ready(function () {
+                             var id;
+                              var loc = window.location.href.substr(0, window.location.href.indexOf('#'));
+                              window.location.hash = loc;
+                              $("[data-role=header]").fixedtoolbar({ tapToggle: false });
+                              $("[data-role=footer]").fixedtoolbar({ tapToggle: false });		
+                              
+                              $("a").attr("data-ajax", "false");
+                              $("a").attr("rel", "external");
+                              
+                              var a = $("form");
+                              if (a != null) {
+                              $("form").first().attr("data-ajax", "false");
+                              $("form").first().attr("rel", "external");
+                              }
+                              $("#menu-icon").click(function () {
+                                                    $(".ui-content").css("opacity", "0.3");
+                                                    
+                                                    Popup.show('mainmenu', 'menu-icon', 'below right', { 'constrainToScreen': true });
+                                                    
+                                                    });
+                         
+                             
+                              $(".reply").live("click", function () {
+                                            
+                                                id = "." + $(this).attr("alt");
+                                                $("#dynamichtml").remove();
+                                                $(".reply").attr("style", "display:inline");
+                                                $(this).attr("style", "display:none");
+                                                
+                                                $(this).parent().parent().parent().append(" <div id='dynamichtml' style='overflow:hidden;width:200px;'><textarea id='txtreply' name='txtreply' placeholder='Type here' class='msgtextarea' style='width:96%' /><br/><div class='msg-btndDiv'> <input type='button' class='send msgbutton' id='btnsend'   value='Send'> <input type='button' value='Cancel' class='cancel msgbutton'  /></div></div>");
+                                                setInterval("setfocus()", 1000);
+                                                $(this).parent().parent().parent().find("#dynamichtml").focusin();
+                                                
+                                                });
+                              
+                              $(".cancel").live("click", function () {
+                                                
+                                                $(this).parents().find(".reply").attr("style", "display:inline");
+                                                $(this).parents().find("#dynamichtml").remove();
+                                                
+                                                });
+                              
+                              $(".send").live("click", function () {
+                                              var CurrentUserId = window.localStorage.getItem("userID");
+                                              
+                                              var ReceiverUserId = $(this).parent().parent().parent().find(".replyActivity").attr("longdesc");
+                                              var reply = document.getElementById("txtreply").value;
+                                              $("#dynamichtml").remove();
+                                              $.getJSON("http://dev.homeelephant.arke.com/api/HomeApi/MessageReplay?CurrentuserID=" + CurrentUserId + "&ReceiverID=" + ReceiverUserId + "&Message=" + reply,
+                                                        function (data) {
+                                                        
+                                                        $(id).parent().parent().attr("style", "color:green");
+                                                        $(id).parent().parent().append("Message Send successfully.");
+                                                        
+                                                        $(id).remove();
+                                                        
+                                                        
+                                                        })
+                                              .fail(
+                                                    function (jqXHR, textStatus, err) {
+                                                    alert('Error Geting Data :');
+                                                    
+                                                    
+                                                    });
+                                              
+                                              });
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+             data:  "userID=" + window.localStorage.getItem("userID"),
+              url: "http://dev.homeelephant.arke.com/Home/MyMessagesPgap",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {		
+
+                var result = "";
+                if (data.count > 0) {
+                    var objMsg = data.data;
+
+                    result += "<ul data-role='listview' style='margin: 0px!important;'>";
+                    for (i = 0; i < data.count; i++) {
+                        result += "<li style='padding: 0.2em 5px!important;'>" +
+                                    "<div class='msg-lefttDiv'>" +
+                                        "<div class='left-userPhotoDiv'>" +
+                                            "<a data-ajax='false' rel='external' href='Message.html?SenderId=" + objMsg[i].UserID + "' style='text-decoration:none;'>" +
+                                                "<span class='profile-photo userimgBlock'>" +
+                                                    "<img src='" + objMsg[i].User_Pictureurl + "' longdesc='" + objMsg[i].UserID + "' class='replyActivity' width='40' height='40' />" +
+                                                "</span></a>" +
+                                       " </div>" +
+                                        "<div class='left-chatmsgDiv'>" +
+                                            "<div style='display: block; overflow: hidden;'>" +
+                                                "<span style='word-wrap: break-word; color: #0B94D7; float: left;'>" + objMsg[i].User_Name + "</span>" +
+                                                "<span style='color: red; font-size: 10px; float: right; margin-top: 5px;'>" + objMsg[i].CreatedDate +
+                                               " </span>" +
+                                           " </div>" +
+                                            "<div class='right-usermessage'>" +
+                                                "<span class='msg-reply-wrapper'><span class='msg-reply'></span></span><span id='MessageText' class='display-messagespan messageText'>" + objMsg[i].Message + " </span> " +
+                                            "</div>" +
+                                       " </div>" +
+                                   " </div>" +
+                                   " <div style='margin-top: 5px;'>" +
+                                        "<span style='vertical-align:bottom'>" +
+           
+                                        "<img src='img/reply.png'  style='cursor:pointer'  longdesc='" + objMsg[i].UserID + "' class='reply " + objMsg[i].ID + "' alt='" + objMsg[i].ID + "'/>" +
+                                        "</span>" +
+                                    "</div>" +
+                                "</li>";
+                    }
+                    result += "</ul>";
+
+                    $("#scroll").append(result);
+                }
+                else {
+                    result += "<li><label title='No Contacts'>No Message.</label></li>";
+                }
+
+
+
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+               
+            }
+        });
+
+
+    });
+            function onBodyLoad()
+            {		
+                document.addEventListener("deviceready", onDeviceReady, false);
+            }
+            
+            /* When this function is called, Cordova has been initialized and is ready to roll */
+            /* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
+             see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
+             for more details -jm */
+            function onDeviceReady()
+            {
+                window.pageIsLoaded = true;
+                var facebookConnect = window.plugins.facebookConnect;
+                
+                // facebookConnect.login({permissions: ["email", "user_about_me"], appId: "404196699634359"}, function(result) {
+                //                      console.log("FacebookConnect.login:" + JSON.stringify(result))});
+                
+            }   
+            </script>
+        <body onload="onBodyLoad()">
+            <div data-role="page" data-theme="a">
+                
+                <div data-role="header" data-inline="true" >
+                    
+                    <a href="" id="menu-icon" class="menulist-icon"></a>
+                    <a href='MyMessages.html' class = "addchat-icon" title="My Messages">
+                    </a>
+                    <h1>
+                        My Messages
+                    </h1>
+                    
+                    <div id="mainmenu" class="popupmenu">
+                        <a href="activityWall.html" class = "link-header">
+                            <img alt="" class="menu-icon" src="img/icon/home.png" title="Home" />
+                            <span class="menu-name">Home</span>
+                            <hr class="menu-divider" />
+                        </a>
+                        <a href='Profile.html' class = "link-header">
+                            <img alt="" class="menu-icon" src="img/icon/user.png" title="Profile" />
+                            <span class="menu-name">Profile</span>
+                            <hr class="menu-divider" />
+                        </a>
+                        <a href='Neighbor.html' class = "link-header">
+                            <img alt="" class="menu-icon" src="img/icon/shopping-bag.png" title="Neighbor" />
+                            <span class="menu-name">Neighbors List</span>
+                            <hr class="menu-divider" />
+                        </a>
+                        <a href='WallNotifications.html' class = "link-header">
+                            <img alt="" class="menu-icon" src="img/icon/mail.png" title="WallNotifications" />
+                            <span class="menu-name">Notifications</span>
+                            <hr class="menu-divider" />
+                        </a>
+                        <a href='#' id="lnkLogout" onclick="plugin.logout();" data-ajax="false" class = "link-header">
+                            <img alt="" class="menu-icon" src="img/icon/unlock.png" title="LogOff" />
+                            <span class="menu-name">Log Out</span>                 
+                        </a>                            
+                    </div>
+                </div>
+
+ <div data-role="content">
+<ul data-role="listview" id="fixedHeader">
+    <li data-role="list-divider">All Messages</li>
+</ul>
+<div id="scroll" class="mymsgDiv">
+</div>
+ </div>
+                <div data-role="footer">
+                    <h3>
+                        Copyright By Home Elephant</h3>
+                </div>
+            </div>
+            
+        </body>
+</html>
+

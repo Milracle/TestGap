@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, maximum-scale=1.0" /> 
+        <title>WallNotifications</title>
+        
+        <link href="css/jqm-docs.css" rel="stylesheet" type="text/css" />
+        <link href="css/jquery.mobile-1.2.0-alpha.1.css" rel="stylesheet" type="text/css" />
+        <link href="css/theme.css" rel="stylesheet" type="text/css" />
+        <link href="css/custom.css" rel="stylesheet" type="text/css" />
+        <link href="css/jquery.mobile.simpledialog.min.css" rel="stylesheet" type="text/css" />
+        
+        <script src="js/jquery-1.7.1.js" type="text/javascript"></script>
+        <script src="js/jquery.mobile-1.2.0-alpha.1.js" type="text/javascript"></script>
+        <script src="js/jquery.mobile.simpledialog2.js" type="text/javascript"></script>
+        <script src="js/Popup.js" type="text/javascript"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/plugin.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/FacebookConnect.js"></script>
+    <script type="text/javascript">
+        
+        function notificationClick(obj)
+        {
+            $.ajax({
+                   type: "GET",
+                   contentType: "application/json",
+                   data:  "notificationID=" + obj.alt,
+                   url: "http://dev.homeelephant.arke.com/Home/WallNotificationData",
+                   contentType: "application/json; charset=utf-8",
+                   dataType: "json",
+                   success: function (data) {
+                   
+                        window.location = data.redirectUrl;
+                   
+                   },
+                   error: function (XMLHttpRequest, textStatus, errorThrown) {
+                   
+                   }
+                   });
+        }
+        $(document).ready(function () {
+                    
+                          var loc = window.location.href.substr(0, window.location.href.indexOf('#'));
+                          window.location.hash = loc;
+                          $("[data-role=header]").fixedtoolbar({ tapToggle: false });
+                          $("[data-role=footer]").fixedtoolbar({ tapToggle: false });
+                          
+                          $("a").attr("data-ajax", "false");
+                          $("a").attr("rel", "external");
+                          
+                          var a = $("form");
+                          if (a != null) {
+                          $("form").first().attr("data-ajax", "false");
+                          $("form").first().attr("rel", "external");
+                          }
+                          $("#menu-icon").click(function () {
+                                                $(".ui-content").css("opacity", "0.3");
+                                                
+                                                Popup.show('mainmenu', 'menu-icon', 'below right', { 'constrainToScreen': true });
+                                                
+                                                });
+                          
+                          $("#confirmLink").live("click", function () {
+                                                                                                    
+                                                  $.ajax({
+                                                         type: "GET",
+                                                         contentType: "application/json",
+                                                         data:  "userID=" + window.localStorage.getItem("userID"),
+                                                         url: "http://dev.homeelephant.arke.com/Home/ConfirmFriendPgap?userID="+window.localStorage.getItem("userID")+"&otherUserID=" + $(this).attr("longdesc") + "&status=Confirm&notificationID=" + $(this).attr("alt") ,
+                                                         contentType: "application/json; charset=utf-8",
+                                                         dataType: "json",
+                                                         success: function (data) {
+                                                        
+                                                        
+                                                         
+                                                         },
+                                                         error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                                         
+                                                         }
+                                                         });
+
+                                                  
+                                      });
+                          
+                          $("#ingnorLink").live("click", function () {
+                                                
+                                            
+                                                    $.ajax({
+                                                        type: "GET",
+                                                        contentType: "application/json",
+                                                        data:  "userID=" + window.localStorage.getItem("userID"),
+                                                         url: "http://dev.homeelephant.arke.com/Home/RevertRequestPgap?userID=" + $(this).attr("longdesc")  + "&otherUserID=" +window.localStorage.getItem("userID"),
+                                                        contentType: "application/json; charset=utf-8",
+                                                        dataType: "json",
+                                                        success: function (data) {
+                                                       
+                                                                                                                                
+                                                                        },
+                                                                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                                                        
+                                                                        }
+                                                                        });
+
+                                                  });
+                          
+                          
+                          
+                                               
+                                                    
+                          
+            $.ajax({
+                type: "GET",
+                contentType: "application/json",
+                data:  "userID=" + window.localStorage.getItem("userID"),
+                url: "http://dev.homeelephant.arke.com/Home/WallNotificationsPgap",
+                
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+                   
+                    $(".unreadLabel").append("(" +data.UnreadMessages.count+ ")");
+
+                    UnreadBlock = "";
+                    if (data.UnreadMessages.count > 0) {
+                        var unread = data.UnreadMessages.data;
+                        for (i = 0; i < data.UnreadMessages.count; i++) {
+                            UnreadBlock += "<li style='border: 0px none!important;'>" +
+                           "<div style='display: inline-block; height: 40px; width: 40px; padding: 3px; margin-right: 5px;' class='profile-photo'>" +
+                            "<a href='NeighborProfile.html?id=" + unread[i].CreatedBy + "' data-ajax='false' rel='external' >" +
+                            "<img src='" + unread[i].UserMasterID_Pic + "' height='40' width='40'  /></a>" +
+                             "</div>" +
+                              "<div style='vertical-align: top; width: 70%; display: inline-block;'>" +
+                            "<img src='img/notification_admin.png' width='16' height='16' />" +
+                            "<a href='NeighborProfile.html?id=" + unread[i].CreatedBy + "' data-ajax='false' rel='external' style='color:Red;text-decoration:none;' >" + unread[i].CreatedName + "</a>" +
+                            "<span class='DateString'>" + unread[i].CreatedDate +
+                            "</span>" +
+                            "<br />" +
+                            "<input type='button' onclick='notificationClick(this);' id= class='ui-mini ui-btn-inline ui-btn-text ui-btn-inner ui-btn-corner-all' style='font-family:Helvetica,Arial,sans-serif;font-size:13px;' value='" + unread[i].Notification + "' alt='" + unread[i].ID + "' data-mini='true'  />" +
+                            "<br />";
+ 
+                            if (unread[i].NotificationType == "friendrequest") {
+         	
+                                UnreadBlock += "<br />" +
+                                                "<div align='right'>" +
+                                                " <a href='neighborProfile.html?id="+ unread[i].CreatedBy +"' data-role='button' data-icon='check' data-iconpos='right'  data-mini='true' data-inline='true' data-shadow='true' style='width:150px' id='confirmLink' longdesc='"+unread[i].CreatedBy+"' alt='"+ unread[i].ID +"' >Confirm</a> " +
+                                                 "<a href='neighborProfile.html?id="+ unread[i].CreatedBy +"' longdesc='"+unread[i].CreatedBy+"' ' data-ajax='false' data-role='button' data-icon='info' data-iconpos='right' data-mini='true' data-inline='true' id='ingnorLink' style='width:150px' >Ignore</a> " +
+                                                "</div>";
+
+                            }
+
+                            UnreadBlock += "<input type='hidden' name='NotificationJson' value='" + unread[i].Notification + "' />" +
+                                            "<input type='hidden' name='NotificationID' value='" + unread[i].ID + "' />" +
+                                            "</div>" +
+                                            "</li>";
+                        }
+                    }
+                    else {
+                        UnreadBlock += "<li style='border: 0px none!important;'>" +
+                                            "<label title='No Contacts'>" +
+                                    "No Unread Notification</label></li>   ";
+                    }
+                   // UnreadBlock += "";
+
+                    $("#ulUnread").append(UnreadBlock);
+
+                   $(".readLabel").append("(" + data.ReadMessages.count+ ")");
+                   
+
+
+                    var readBlock = "";
+                  
+                    if (data.ReadMessages.count > 0) {
+                        var read = data.ReadMessages.data;
+                        for (i = 0; i < data.ReadMessages.count; i++) {
+                            readBlock += "<li style='border: 0px none!important;'>" +
+                           "<div style='display: inline-block; height: 40px; width: 40px; padding: 3px; margin-right: 5px;' class='profile-photo'>" +
+                            "<a href='NeighborProfile.html?id=" + read[i].CreatedBy + "' data-ajax='false' rel='external' >" +
+                            "<img src='" + read[i].UserMasterID_Pic + "' height='40' width='40'  /></a>" +
+                             "</div>" +
+                              "<div style='vertical-align: top; width: 70%; display: inline-block;'>" +
+                            "<img src='img/notification_admin.png' width='16' height='16' />" +
+                            "<a href='NeighborProfile.html?id=" + read[i].CreatedBy + "' style='color:Red;text-decoration:none;' data-ajax='false' rel='external' >" + read[i].CreatedName + "</a>" +
+                            "<span class='DateString'>" + read[i].CreatedDate +
+                            "</span>" +
+                            "<br />" +
+                            "<input type='submit' onclick='notificationClick(this);' class='ui-mini ui-btn-inline ui-btn-text ui-btn-inner ui-btn-corner-all' style='font-family:Helvetica,Arial,sans-serif;font-size:13px;' value='" + read[i].Notification + "' alt='" + read[i].ID + "' data-mini='true'  />" +
+                            "<br />";
+
+
+                            readBlock += "<input type='hidden' name='NotificationJson' value='" + read[i].Notification + "' />" +
+                                            "<input type='hidden' name='NotificationID' value='" + read[i].ID + "' />" +
+                                            "</div>" +
+                                            "</li>";
+                        }
+                    }
+                    else {
+                        readBlock += "<li style='border: 0px none!important;'>" +
+                                            "<label title='No Contacts'>" +
+                                    " No Read Notification</label></li>   ";
+                    }
+                    $("#ulRead").append(readBlock);
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+               	  
+                }
+            });
+
+            $("#NotificationID").click(function () {
+                $("#hdnSelectedValue").attr("value", $(this).attr("alt"));
+                return true;
+
+            });
+            $(".confirm").click(function () {
+                $("#hdnSelectedValue").attr("value", $(this).attr("title"));
+                return true;
+            });
+        });
+        
+        function onBodyLoad()
+        {		
+            document.addEventListener("deviceready", onDeviceReady, false);
+        }
+        
+        /* When this function is called, Cordova has been initialized and is ready to roll */
+        /* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
+         see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
+         for more details -jm */
+        function onDeviceReady()
+        {
+            window.pageIsLoaded = true;
+            var facebookConnect = window.plugins.facebookConnect;
+            
+            // facebookConnect.login({permissions: ["email", "user_about_me"], appId: "404196699634359"}, function(result) {
+            //                      console.log("FacebookConnect.login:" + JSON.stringify(result))});
+            
+        }    </script>
+        <body onload="onBodyLoad()">
+            <div data-role="page" data-theme="a">
+                
+                <div data-role="header" data-inline="true" >
+                    
+                    <a href="" id="menu-icon" class="menulist-icon"></a>
+                    <a href='MyMessages.htlm' class = "addchat-icon" title="My Messages">
+                    </a>
+                    <h1>
+                        WallNotifications
+                    </h1>
+                    
+                    <div id="mainmenu" class="popupmenu">
+                        <a href="activityWall.html" class = "link-header">
+                            <img alt="" class="menu-icon" src="img/icon/home.png" title="Home" />
+                            <span class="menu-name">Home</span>
+                            <hr class="menu-divider" />
+                        </a>
+                        <a href='Profile.html' class = "link-header">
+                            <img alt="" class="menu-icon" src="img/icon/user.png" title="Profile" />
+                            <span class="menu-name">Profile</span>
+                            <hr class="menu-divider" />
+                        </a>
+                        <a href='Neighbor.html' class = "link-header">
+                            <img alt="" class="menu-icon" src="img/icon/shopping-bag.png" title="Neighbor" />
+                            <span class="menu-name">Neighbors List</span>
+                            <hr class="menu-divider" />
+                        </a>
+                        <a href='WallNotifications.html' class = "link-header">
+                            <img alt="" class="menu-icon" src="img/icon/mail.png" title="WallNotifications" />
+                            <span class="menu-name">Notifications</span>
+                            <hr class="menu-divider" />
+                        </a>
+                        <a href='#' id="lnkLogout" onclick="plugin.logout();" data-ajax="false" class = "link-header">
+                            <img alt="" class="menu-icon" src="img/icon/unlock.png" title="LogOff" />
+                            <span class="menu-name">Log Out</span>                 
+                        </a>                            
+                    </div>
+                </div>
+                 <div data-role="content">
+    <input type="hidden" id="hdnSelectedValue" name="hdnSelectedValue" value="" />
+   
+        
+    <div id="UnreadMessageHeader" class='content-secondary' style='margin-top: 32px!important;'>
+        <div class='headerDiv'>
+            <span class='right-BlueTitle'>
+                <span class='right-headerDivider unreadLabel'>UnREAD Notification
+                    </span>
+            </span>
+                   </div>
+        <ul id="ulUnread" data-role='listview'>
+        </ul>
+        <br/><br/>
+        <div class='headerDiv'>
+            <span class='right-GrayTitle'>
+                <span class='right-headerDivider readLabel'>
+                    READ Notification
+                </span>
+            </span>
+        </div>
+        <ul id="ulRead" data-role='listview'>
+            
+        </ul>
+
+    </div>
+   
+   
+
+    <div id="readMessageHeader" class="content-primary">
+    </div> 
+                     </div>
+                <div data-role="footer">
+                    <h3>
+                        Copyright By Home Elephant</h3>
+                </div>
+            </div>
+          
+        </body>
+</html>

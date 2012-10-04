@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, maximum-scale=1.0" /> 
+    <title>Profile</title>
+   
+    <link href="css/jqm-docs.css" rel="stylesheet" type="text/css" />
+<link href="css/jquery.mobile-1.2.0-alpha.1.css" rel="stylesheet" type="text/css" />
+<link href="css/theme.css" rel="stylesheet" type="text/css" />
+ <link href="css/custom.css" rel="stylesheet" type="text/css" />
+     <link href="css/jquery.mobile.simpledialog.min.css" rel="stylesheet" type="text/css" />
+
+<script src="js/jquery-1.7.1.js" type="text/javascript"></script>
+<script src="js/jquery.mobile-1.2.0-alpha.1.js" type="text/javascript"></script>
+<script src="js/jquery.mobile.simpledialog2.js" type="text/javascript"></script>
+<script src="js/Popup.js" type="text/javascript"></script>
+    <script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+       <script type="text/javascript" charset="utf-8" src="js/plugin.js"></script>
+       <script type="text/javascript" charset="utf-8" src="js/FacebookConnect.js"></script>
+    
+ 
+    <script type="text/javascript">
+//        SA.redirection_mobile({ noredirection_param: "noredirection", mobile_url: "m." + window.location.host, cookie_hours: "2" });
+    
+      
+        
+        $(document).ready(function () {
+                          // alert(window.localStorage.getItem("userID"));
+                          //               loadContent();              
+                          
+                          $("[data-role=header]").fixedtoolbar({ tapToggle: false });
+                          $("[data-role=footer]").fixedtoolbar({ tapToggle: false });
+                          
+                          $("a").attr("data-ajax", "false");
+                          $("a").attr("rel", "external");
+                          
+                          var a = $("form");
+                          if (a != null) {
+                          $("form").first().attr("data-ajax", "false");
+                          $("form").first().attr("rel", "external");
+                          }
+                          $("#menu-icon").click(function () {
+                                                $(".ui-content").css("opacity", "0.3");
+                                                
+                                                Popup.show('mainmenu', 'menu-icon', 'below right', { 'constrainToScreen': true });
+                                                
+                                                });
+                          
+                          var df=document.getElementById('imgLoader');
+                          df.style.position='absolute';
+                          df.style.left = '50%';
+                          df.style.top = '50%';
+                          
+                          $.ajax({
+                                 type: "GET",
+                                 contentType: "application/json",
+                                 data: "userID=" + window.localStorage.getItem("userID"),
+                                 url: "http://dev.homeelephant.arke.com/Home/NeighborData",
+                                 contentType: "application/json; charset=utf-8",
+                                 dataType: "json",
+                                 success: function (data) {
+                                 
+                                 // Contacts 
+                                 var obj = data.contacts.data;    
+                                 var res = ""; 
+                                 for (i in obj)          
+                                 {
+                                 if (obj.hasOwnProperty(i)) {
+                                 res +=  "<div class='imgViewDiv'> " +
+                                         "<a href='neighborProfile.html?id="+ obj[i].id +"' data-ajax='false' rel='external' >" +
+                                         "<img src='"+ obj[i].picture + "' style='position:absolute' alt='No Image Found' height='80' />" +
+                                         "</a><span class='bgUserName'>" + obj[i].name + "</span></div>";
+                                 }
+                                 }
+                                 
+                                 if(res == "")
+                                 res += "<center><label> No Contacts found.</label> </center>"; 
+                                 
+                                 $("#divContacts").html(res);
+                                 
+                                 // Neighbors 
+                                 obj = data.neighbors.data;    
+                                 res = ""; 
+                                 for (i in obj)          
+                                 {
+                                 if (obj.hasOwnProperty(i)) {
+                                 res +=  "<div class='imgViewDiv'> " +
+                                         "<a href='neighborProfile.html?id="+ obj[i].id +"'  data-ajax='false' rel='external'>" +
+                                         "<img src='"+ obj[i].picture + "' style='position:absolute' alt='No Image Found' height='80' />" +
+                                         "</a><span class='bgUserName'>" + obj[i].name + "</span></div>";
+                                 }
+                                 }
+                                 
+                                 if(res == "")
+                                 res += "<center><label> No Neighbors found.</label> </center>"; 
+                                 
+                                 $("#divNeighbors").html(res);
+                                 
+                                 // Potential 
+                                 obj = data.potentialUsers.data;    
+                                 res = ""; 
+                                 for (i in obj)          
+                                 {
+                                 if (obj.hasOwnProperty(i)) {
+                                 res +=  "<div class='imgViewDiv'> " +
+                                         "<img src='"+ obj[i].picture + "' style='position:absolute' alt='No Image Found' height='80' />" +
+                                         "<span class='bgUserName'>" + obj[i].name + "</span></div>";
+                                 }
+                                 }
+                                 
+                                 if(res == "")
+                                 res += "<center><label> No potential users found.</label> </center>"; 
+                                 
+                                 $("#divPotential").html(res);
+                                 
+                                 // similarInterests 
+                                 obj = data.similarInterests.data;    
+                                 res = ""; 
+                                 for (i in obj)          
+                                 {
+                                 if (obj.hasOwnProperty(i)) {
+                                 res +=  "<div class='imgViewDiv'> " +
+                                         "<a href='neighborProfile.html?id="+ obj[i].id +"' data-ajax='false' rel='external' >" +
+                                         "<img src='"+ obj[i].picture + "' style='position:absolute' alt='No Image Found' height='80' />" +
+                                         "</a><span class='bgUserName'>" + obj[i].name + "</span></div>";
+                                 }
+                                 }
+                                 if(res == "")
+                                    res += "<center><label> No users found.</label> </center>";   
+                                 
+                                 $("#divSimilarInterests").html(res);
+                                 $("#imgLoader").attr("style", "display:none");     
+                                 
+                                },
+                                 error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                 
+                                 }
+                                 });
+                                            
+        });
+        
+        function onBodyLoad()
+        {		
+            document.addEventListener("deviceready", onDeviceReady, false);
+        }
+        
+        /* When this function is called, Cordova has been initialized and is ready to roll */
+        /* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
+         see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
+         for more details -jm */
+        function onDeviceReady()
+        {
+            window.pageIsLoaded = true;
+            var facebookConnect = window.plugins.facebookConnect;
+            
+           // facebookConnect.login({permissions: ["email", "user_about_me"], appId: "404196699634359"}, function(result) {
+            //                      console.log("FacebookConnect.login:" + JSON.stringify(result))});
+
+        }
+
+    </script>
+  
+    <style type="text/css">
+        *
+        {
+            font-family: Segoe UI,Tahoma,Arial,Verdana,sans-serif !important;
+            font-weight: normal !important;
+        }
+        </style>
+</head>
+<body onload="onBodyLoad()">
+     <div data-role="page" data-theme="a">
+   
+         <div data-role="header" data-inline="true" >
+             
+             <a href="" id="menu-icon" class="menulist-icon"></a>
+             <a href='mys.html' class = "addchat-icon" title="My s">
+             </a>
+             <h1>
+                 Neighbors
+             </h1>
+             
+             <div id="mainmenu" class="popupmenu">
+                 <a href="activityWall.html" class = "link-header">
+                     <img alt="" class="menu-icon" src="img/icon/home.png" title="Home" />
+                     <span class="menu-name">Home</span>
+                     <hr class="menu-divider" />
+                 </a>
+                 <a href='profile.html' class = "link-header">
+                     <img alt="" class="menu-icon" src="img/icon/user.png" title="Profile" />
+                     <span class="menu-name">Profile</span>
+                     <hr class="menu-divider" />
+                 </a>
+                 <a href='neighbors.html' class = "link-header">
+                     <img alt="" class="menu-icon" src="img/icon/shopping-bag.png" title="Neighbor" />
+                     <span class="menu-name">Neighbors List</span>
+                     <hr class="menu-divider" />
+                 </a>
+                 <a href='WallNotifications.html' class = "link-header">
+                     <img alt="" class="menu-icon" src="img/icon/mail.png" title="WallNotifications" />
+                     <span class="menu-name">Notifications</span>
+                     <hr class="menu-divider" />
+                 </a>
+                 <a href='#' id="lnkLogout" onclick="plugin.logout();" data-ajax="false" class = "link-header">
+                     <img alt="" class="menu-icon" src="img/icon/unlock.png" title="LogOff" />
+                     <span class="menu-name">Log Out</span>                 
+                 </a>                            
+             </div>
+         </div>
+       
+         <div data-role="content">
+            <img src="img/ajax-loader.gif" id="imgLoader" width="54px" height="54px" />
+             <div class="headTitle">
+                 <span class="left-BlueTitle">
+                     <span class="left-headerDivider">
+                         Your Contacts </span>
+                 </span>
+                 <img src="img/icon/neighb-profile.png" style="vertical-align:middle;" alt="" />
+                 <label class="numberofuser"></label>
+             </div>
+             <div id="divContacts" class="imgDiv"></div>
+             
+             <div class="headTitle">
+                 <span class="left-GaryTitle">
+                     <span class="left-headerDivider">
+                         Your Neighbors</span>
+                 </span>
+                 <img src="img/icon/neighb-profile.png" style="vertical-align:middle;" alt="" />
+                 <label class="numberofuser"></label>
+             </div>
+              <div id="divNeighbors" class="imgDiv"></div>
+             
+             <div class="headTitle">
+                 <span class="left-GreenTitle">
+                     <span class="left-headerDivider">
+                         Potential Users</span>
+                 </span>
+                 <img src="img/icon/neighb-profile.png" style="vertical-align:middle;" alt="" />
+                 <label class="numberofuser"></label>
+             </div>
+             <div id="divPotential" class="imgDiv"></div>
+             
+             <div class="headTitle">
+                 <span class="left-GreenTitle">
+                     <span class="left-headerDivider">
+                         Similar Interest Users</span>
+                 </span>
+                 <img src="img/icon/neighb-profile.png" style="vertical-align:middle;" alt="" />
+                 <label class="numberofuser"></label>
+             </div>
+             <div id="divSimilarInterests" class="imgDiv"></div>
+    
+         </div>
+         <div data-role="footer">
+             <h3>
+                 Copyright By Home Elephant</h3>
+         </div>
+         </div>
+    <script type="text/javascript">
+        (function () {
+         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+         })();
+        
+        </script>
+</body>
+</html>

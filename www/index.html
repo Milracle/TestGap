@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<!--
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#  KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+-->
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name = "format-detection" content = "telephone=no"/>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width;" />
+        <script type="text/javascript" charset="utf-8"  src="js/jquery-1.7.1.js"></script>
+        <link href="css/custom.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/plugin.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/FacebookConnect.js"></script>
+        <script type="text/javascript">
+            
+            $(document).ready(function () {
+                            
+                              if(window.localStorage.getItem("userID") != null)
+                              {
+                                window.location="profile.html";
+                              }
+                              var h = $(window).height();
+                              var w = $(window).width();
+                              $('#main').attr('style', 'background-image:url(img/background.jpg);background-size: 100% 100%;background-repeat: no-repeat;');
+                              $(window).resize();
+                              $(window).resize(function () {
+                                               var h = $(window).height();
+                                               var w = $(window).width();
+                                               $('#main').removeAttr('style');
+                                               $('#main').attr('style', 'background-image:url(img/background.jpg);background-size: 100% 100%;background-repeat: no-repeat;');
+                                               });
+                              });
+            
+            // If you want to prevent dragging, uncomment this section
+            /*
+             function preventBehavior(e) 
+             { 
+             e.preventDefault(); 
+             };
+             document.addEventListener("touchmove", preventBehavior, false);
+             */
+            
+            /* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
+             see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
+             for more details -jm */
+            /*
+             function handleOpenURL(url)
+             {
+             // TODO: do something with the url passed in.
+             }
+             */
+                      
+        
+            
+            function onBodyLoad()
+            {		
+                document.addEventListener("deviceready", onDeviceReady, false);
+            }
+            
+            /* When this function is called, Cordova has been initialized and is ready to roll */
+            /* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
+             see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
+             for more details -jm */
+            function onDeviceReady()
+            {
+                // Used by unit tests to tell when the page is loaded.
+                window.pageIsLoaded = true;
+                // do your thing!
+                //navigator.notification.alert("Cordova is working");
+                
+                var root = this;
+                
+                var facebookConnect = window.plugins.facebookConnect;
+                
+                /*
+                
+                $.ajax({
+                       type: "GET",
+                       contentType: "application/json",
+                       data: "userEmail=milanmendpara@ymail.com",
+                       url: "http://dev.homeelephant.arke.com/api/ActivityApi/GetData",
+                       contentType: "application/json; charset=utf-8",
+                       dataType: "json",
+                       success: function (data) {
+                        //alert(data);
+                       },
+                       error: function (XMLHttpRequest, textStatus, errorThrown) {
+                       
+                       }
+                });
+
+                
+                
+                              
+                $.getJSON("http://dev.homeelephant.arke.com/api/ActivityApi/GetData?userEmail=milanmendpara@ymail.com",
+                          function (data) {
+                       //   alert(data);                             
+                          })
+                .fail(
+                      function (jqXHR, textStatus, err) {
+                      alert('Error Saving Data :', err);
+                      });     
+            
+                */
+            }
+                   
+        </script>
+    </head>
+    <body onload="onBodyLoad()">
+        <div id="main">
+            
+        </div>
+        <div style="position: relative;">
+            <div class="innerdiv1">
+                <img src="img/logo.png" alt="" />
+            </div>
+            <div style="margin: 0 20%;">
+                <div class="innerdiv1">
+                    <a href="#" onclick="plugin.login();" class= "btnaddfriend">
+                        <img src="img/facebook.png" class="fbicon" />
+                        
+                        <span style="vertical-align: super;font-size:15px;">Login With Facebook</span> </a>
+                    
+                </div>
+                <div class="innerdiv2">
+                    <span>or</span>
+                </div>
+                
+                <div class="innerdiv2">
+                    <a href="" class="btnuserlogin">Beta User Login</a>
+                </div>
+            </div>
+            <div data-role="content">
+                
+            </div>
+        </div>
+    </body>
+</html>
