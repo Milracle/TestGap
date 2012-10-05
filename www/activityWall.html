@@ -40,9 +40,9 @@
                               $("form").first().attr("rel", "external");
                               }
                               $("#menu-icon").click(function () {
-                              $(".ui-content").css("opacity", "0.3");
-                              Popup.show('mainmenu', 'menu-icon', 'below right', { 'constrainToScreen': true });
-                              });
+                                                    $(".ui-content").css("opacity", "0.3");
+                                                    Popup.show('mainmenu', 'menu-icon', 'below right', { 'constrainToScreen': true });
+                                                    });
                               $.ajax({
                                      type: "GET",
                                      contentType: "application/json",
@@ -53,8 +53,8 @@
                                      success: function (data) {
                                      $("#userName").html(data.userName);
                                      $("#userImage").attr("src",data.userImage);
-                                    
-                                
+                                     
+                                     
                                      
                                      if(data.activityCount<3)
                                      {
@@ -137,7 +137,7 @@
                                                         //    setInterval("setfocus()", 1000);
                                                         
                                                         $(this).parent().parent().parent().find("#dynamichtml").focusin();
-                                                         });
+                                                        });
                               
                               $(".cancel").live("click", function () {
                                                 $("body").find(".AlertActivity").attr("style", "display:inline");
@@ -154,37 +154,35 @@
                               
                               $(".send").live("click", function () {
                                               
-                                              $("body").find(".replyActivity").css("display", "inline");
                                               $("body").find(".AlertActivity").attr("style", "display:inline");
                                               $("body").find(".EventActivity").attr("style", "display:inline");
                                               $("body").find(".UpdateActivity").attr("style", "display:inline");
-                                              $("#WriteOnWallbtn").attr("style", "display:none");
-
                                               
-                                              var ID = $(this).parents().find(".replyActivity").attr("alt");
+                                              
+                                              var MessageID = $(this).parents().find(".replyActivity").attr("alt");
                                               var userID = window.localStorage.getItem("userID");
                                               var reply = document.getElementById("txtreply").value;
                                               var type = $("#hdnType").val();
                                               
                                               
-                                              if (ID == "")
+                                              if (MessageID == "")
                                               var htmlTag = $(this).parents().find("#MainActivity");
                                               else {
-                                              var htmlTag = $(this).parents().parents().parents().parents().parents().parents().find("#" + ID);
+                                              var htmlTag = $(this).parents().parents().parents().parents().parents().parents().find("#" + MessageID);
                                               htmlTag = htmlTag.find("#nestComments");
                                               // ADDED BY SNEHAL(RJ) ON 27-AUR-2012
-                                              htmlTag.find('.subdiv').css("visibility", "visible");
+                                              htmlTag.find('.submessagediv').css("visibility", "visible");
                                               }
                                               htmlTag.parents().find("#dynamichtml").remove();
                                               
-                                              $.getJSON("http://dev.homeelephant.arke.com/api/HomeApi/SaveActivity?userID=" + userID + "&ID=" + ID + "&reply=" + reply + "&type=" + type,
+                                              $.getJSON("http://dev.homeelephant.arke.com/api/HomeApi/SaveActivity?userID=" + userID + "&MessageID=" + MessageID + "&reply=" + reply + "&type=" + type,
                                                         function (data) {
-                                                        // alert("come");
-                                                        if (ID == "") {
+                                                    	// alert("come");
+                                                        if (MessageID == "") {
                                                         htmlTag.prepend(data);
                                                         }
                                                         else {
-                                                        htmlTag.find('.subdiv').append(data);
+                                                        htmlTag.find('.submessagediv').append(data);
                                                         }
                                                         // alert("go");
                                                         })
@@ -192,7 +190,6 @@
                                                     function (jqXHR, textStatus, err) {
                                                     alert('Error Saving Data :', err);
                                                     });
-                                              _gaq.push(['_trackEvent', 'profile', 'click', 'send']);
                                               
                                               });
                               /// ---- end of add
@@ -206,21 +203,20 @@
                                                       $(this).css("display", "none");
                                                       
                                                       if ($(this).attr("longdesc") == "MainActivity") {
-                                                      alert("main");
-                                                      var Span = $(this).parent().parent().find(".Text").first();
+                                                      var messageSpan = $(this).parent().parent().find(".messageText").first();
                                                       var temp = $(this).parent().parent();
-                                                      uniqueidSpan = temp;
+                                                      uniquemessageidSpan = temp;
                                                       }
                                                       else {
                                                       var id = $(this).attr("alt");
-                                                      var Span = $(this).parents().find("#" + id);
-                                                      uniqueidSpan = Span;
-                                                      Span = Span.find(".Text");
+                                                      var messageSpan = $(this).parents().find("#" + id);
+                                                      uniquemessageidSpan = messageSpan;
+                                                      messageSpan = messageSpan.find(".messageText");
                                                       
                                                       }
-                                                      var old = Span.text();
+                                                      var oldmessage = messageSpan.text();
                                                       
-                                                      Span.html("<div id='dynamichtml'><textarea id='txtreply' name='txtreply' class='msgtextarea'>" + old + "</textarea><br/><div style='float:right;margin-right:3%'  class='msg-btndDiv'><input type='button' class='sendEdit msgbutton' id='btnsend' value='Save'> <input type='button' value='Cancel' class='cancelEdit msgbutton'  /></div><br/><br/></div>");
+                                                      messageSpan.html("<div id='dynamichtml'><textarea id='txtreply' name='txtreply' class='msgtextarea'>" + oldmessage + "</textarea><br/><div style='float:right;margin-right:3%'  class='msg-btndDiv'><input type='button' class='sendEdit msgbutton' id='btnsend' value='Save'> <input type='button' value='Cancel' class='cancelEdit msgbutton'  /></div><br/><br/></div>");
                                                       //    setInterval("setfocus()", 1000);
                                                       
                                                       $(this).parent().parent().parent().find("#dynamichtml").focusin();
@@ -233,9 +229,9 @@
                                                     //                parent.find(".editActivity").attr("style", "display:inline");
                                                     $(this).parents().find(".recentactivity-innerdiv-block21").parent().find(".editActivity").css("display", "inline");
                                                     
-                                                    var Span = $(this).parent().parent().parent().parent().find(".Text");
-                                                    if (Span != null)
-                                                    Span.html(document.getElementById('txtreply').value);
+                                                    var messageSpan = $(this).parent().parent().parent().parent().find(".messageText");
+                                                    if (messageSpan != null)
+                                                    messageSpan.html(document.getElementById('txtreply').value);
                                                     
                                                     $(this).parent().parent().find("#dynamichtml").remove();
                                                     });
@@ -243,15 +239,15 @@
                               
                               $(".sendEdit").live("click", function () {
                                                   
-                                                  var ID = $(this).parents().find(".editActivity").attr("alt");
+                                                  var MessageID = $(this).parents().find(".editActivity").attr("alt");
                                                   var reply = document.getElementById("txtreply").value;
-                                                  var htmlTag = uniqueidSpan;
+                                                  var htmlTag = uniquemessageidSpan;
                                                   
                                                   
-                                                  $.getJSON("http://dev.homeelephant.arke.com/api/HomeApi/SaveEditActivity?ID=" + ID + "&reply=" + reply,
+                                                  $.getJSON("http://dev.homeelephant.arke.com/api/HomeApi/SaveEditActivity?MessageID=" + MessageID + "&reply=" + reply,
                                                             function (data) {
                                                             htmlTag.parent().find(".editActivity").css("display", "inline");
-                                                            htmlTag.find(".Text").first().html(reply);
+                                                            htmlTag.find(".messageText").first().html(reply);
                                                             $(this).parent().parent().find("#dynamichtml").remove();
                                                             })
                                                   .fail(
@@ -260,6 +256,7 @@
                                                         });
                                                   
                                                   });
+                              
                               
                               /// ---- end of edit
                               
@@ -326,7 +323,7 @@
             
             
             </script>
-
+     
         <style type="text/css">
             *
             {
@@ -378,7 +375,7 @@
             </div>
             
             <div data-role="content">
-               
+                
                 <div class="content-secondary" style="margin-bottom: 50px!important; margin-top: 15px !important;">
                     <div class="headerDiv">
                         <span class="right-BlueTitle"><span class="right-headerDivider">STATUS</span> </span>
@@ -401,108 +398,102 @@
                 </div>
                 
                 
+                
+                <script type="text/javascript">
                     
-                       <script type="text/javascript">
-                            
-                            var Totalcount,lastcount;
-                            
-                            
-                            window.onload = function () {
-                                Totalcount = 2;
-                                $.getJSON("http://dev.homeelephant.arke.com/api/HomeApi/getActivity?userID="+ window.localStorage.getItem("userID") + "&TotalCount=" + Totalcount + "&otherUserID=" + window.localStorage.getItem("userID"),
-                                          function (data) {
-                                          $("#MainActivity").append(data);
-                                          
-                                          
-                                          })
-                                .fail(
-                                      function (jqXHR, textStatus, err) {
-                                      alert('Error Geting Data :');
-                                      $('#ActionWall').html('Error: ' + err);
-                                      
-                                      });
-                            };
-                            
-                            function findAll() {
-                                Totalcount += 2;
-                                $.getJSON("http://dev.homeelephant.arke.com/api/HomeApi/getActivity?userID=Profile"+ window.localStorage.getItem("userID") +"&TotalCount=" + Totalcount + "&otherUserID=" + window.localStorage.getItem("userID"),
-                                          function (data) {
-                                          $("#MainActivity").append(data);
-                                          if (Totalcount >= lastcount)
-                                          {
-                                          $("#a").css('visibility','hidden');
-                                          }
-                                          })
-                                .fail(
-                                      function (jqXHR, textStatus, err) {
-                                      alert('Error Geting Data :');
-                                      $('#ActionWall').html('Error: ' + err);
-                                      
-                                      });
-                            }
-                            
-                            function setfocus() {
-                                $("#txtreply").focus();
-                                clearInterval(this);
-                            }
-                            
-                            $("#btnSend").live("click", function () {
-                                                      $.getJSON("http://dev.homeelephant.arke.com/api/HomeApi/send?userID=" + window.localStorage.getItem("userID")  + "&=" + $("#txt").val(),
-                                                                function (data) {
-                                                                $("#page").html(data);
-                                                                $.mobile.sdCurrentDialog.close();
-                                                                })
-                                                      .fail(
-                                                            function (jqXHR, textStatus, err) {
-                                                            alert('Error Geting Data :');
-                                                            
-                                                            });
-                                                      })
-                            
-                            //                $("#opendialog").live("click", function () {
-                            //                    // NOTE: The selector can be whatever you like, so long as it is an HTML element.
-                            //                    //       If you prefer, it can be a member of the current page, or an anonymous div
-                            //                    //       like shown.
-                            //                    $('<Div>').simpledialog2({
-                            //                        mode: 'blank',
-                            //                        headerText: 'Send ',
-                            //                        headerClose: true,
-                            //                        blankContent:
-                            //                        "<input type='hidden' id='hdnFriendID' name='hdnFriendID' value='@Model.ID' />" +
-                            //      "<div class='editor-label'> <br/></div>" +
-                            //      "<div class='editor-field' style='margin:0 10px 0 10px;'> <textarea rows='5' cols='60' data-role='none' style='width:96%;' id='txt' name='txt'></textarea></div>" +
-                            //      "<div align='center'> <input type='button' value='Send' id='btnSend' data-inline='true' data-ajax='false' rel='external' /> " +
-                            //                        // NOTE: the use of rel="close" causes this button to close the dialog.
-                            //      "<a rel='close' data-role='button' data-inline='true' href='#'>Close</a> </div> "
-                            //                    })
-                            //                })
-                            
-                            </script>
-                    <div class="content-primary">
-                        <div class="headerDiv">
-                            <span class="right-GreenTitle"><span class="right-headerDivider">RECENT ACTIVITY</span>
-                            </span>
-                        </div>
-                        <div id="MainActivity" style="padding: 0px 2px!important;">
-                        </div>
-                         <a id="a" href="#" data-role="button" data-icon="check" data-iconpos="right" data-mini="true"
-                            onclick="findAll()" data-inline="true" data-shadow="true" style="float:right;">LOAD MORE</a>
-                       
+                    var Totalcount,lastcount;
+                    
+                    
+                    window.onload = function () {
+                        Totalcount = 2;
+                        $.getJSON("http://dev.homeelephant.arke.com/api/HomeApi/getActivity?userID="+ window.localStorage.getItem("userID") + "&TotalCount=" + Totalcount + "&otherUserID=" + window.localStorage.getItem("userID"),
+                                  function (data) {
+                                  $("#MainActivity").append(data);
+                                  
+                                  
+                                  })
+                        .fail(
+                              function (jqXHR, textStatus, err) {
+                              alert('Error Geting Data :');
+                              $('#ActionWall').html('Error: ' + err);
+                              
+                              });
+                    };
+                    
+                    function findAll() {
+                        Totalcount += 2;
+                        $.getJSON("http://dev.homeelephant.arke.com/api/HomeApi/getActivity?userID="+ window.localStorage.getItem("userID") +"&TotalCount=" + Totalcount + "&otherUserID=" + window.localStorage.getItem("userID"),
+                                  function (data) {
+                                  $("#MainActivity").append(data);
+                                  if (Totalcount >= lastcount)
+                                  {
+                                  $("#a").css('visibility','hidden');
+                                  }
+                                  })
+                        .fail(
+                              function (jqXHR, textStatus, err) {
+                              alert('Error Geting Data :');
+                              $('#ActionWall').html('Error: ' + err);
+                              
+                              });
+                    }
+                    
+                    
+                    function setfocus() {
+                        $("#txtreply").focus();
+                        clearInterval(this);
+                    }
+                    
+                    $("#btnSend").live("click", function () {
+                                       $.getJSON("http://dev.homeelephant.arke.com/api/HomeApi/send?userID=" + window.localStorage.getItem("userID")  + "&=" + $("#txt").val(),
+                                                 function (data) {
+                                                 $("#page").html(data);
+                                                 $.mobile.sdCurrentDialog.close();
+                                                 })
+                                       .fail(
+                                             function (jqXHR, textStatus, err) {
+                                             alert('Error Geting Data :');
+                                             
+                                             });
+                                       })
+                    
+                    //                $("#opendialog").live("click", function () {
+                    //                    // NOTE: The selector can be whatever you like, so long as it is an HTML element.
+                    //                    //       If you prefer, it can be a member of the current page, or an anonymous div
+                    //                    //       like shown.
+                    //                    $('<Div>').simpledialog2({
+                    //                        mode: 'blank',
+                    //                        headerText: 'Send ',
+                    //                        headerClose: true,
+                    //                        blankContent:
+                    //                        "<input type='hidden' id='hdnFriendID' name='hdnFriendID' value='@Model.ID' />" +
+                    //      "<div class='editor-label'> <br/></div>" +
+                    //      "<div class='editor-field' style='margin:0 10px 0 10px;'> <textarea rows='5' cols='60' data-role='none' style='width:96%;' id='txt' name='txt'></textarea></div>" +
+                    //      "<div align='center'> <input type='button' value='Send' id='btnSend' data-inline='true' data-ajax='false' rel='external' /> " +
+                    //                        // NOTE: the use of rel="close" causes this button to close the dialog.
+                    //      "<a rel='close' data-role='button' data-inline='true' href='#'>Close</a> </div> "
+                    //                    })
+                    //                })
+                    
+                    </script>
+                <div class="content-primary">
+                    <div class="headerDiv">
+                        <span class="right-GreenTitle"><span class="right-headerDivider">RECENT ACTIVITY</span>
+                        </span>
                     </div>
-            
+                    <div id="MainActivity" style="padding: 0px 2px!important;">
+                    </div>
+                    <a id="a" href="#" data-role="button" data-icon="check" data-iconpos="right" data-mini="true"
+                        onclick="findAll()" data-inline="true" data-shadow="true" style="float:right;">LOAD MORE</a>
+                    
+                </div>
+                
             </div>
             <div data-role="footer">
                 <h3>
                     Copyright By Home Elephant</h3>
             </div>
         </div>
-        <script type="text/javascript">
-            (function () {
-             var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-             ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-             })();
-            
-            </script>
+       
     </body>
 </html>
